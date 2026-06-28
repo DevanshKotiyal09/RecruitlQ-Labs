@@ -1,0 +1,118 @@
+# Redrob Hackathon — Submission Metadata
+# India Runs Data & AI Challenge
+# Stage 3 review uses this file to verify portal metadata.
+
+# ============================================================================
+# Team identity
+# ============================================================================
+team_name: "redrob-india-runs"
+
+primary_contact:
+  name: "Team Lead"
+  email: "teamlead@example.com"
+  phone: "+91-9000000000"
+
+team_members:
+  - name: "Team Lead"
+    email: "teamlead@example.com"
+    role: "ML Engineer / Team Lead"
+
+# ============================================================================
+# Code and reproducibility
+# ============================================================================
+github_repo: "https://github.com/YOUR_USERNAME/india-runs-ranker"
+# Private repo — organizer access granted on request at Stage 3.
+
+sandbox_link: "N/A"
+# CLI-only system; no hosted web interface. Reproducible via rank.py on any
+# CPU machine with Python 3.10+ and the two pip dependencies.
+
+reproduce_command: >-
+  python rank.py
+  --candidates ./candidates.jsonl
+  --index_dir ./index
+  --out ./submission.csv
+# Requires precompute.py to be run first (one-time, ~15–20 min).
+# Full reproduction sequence:
+#   pip install -r requirements.txt
+#   python precompute.py --candidates ./candidates.jsonl --index_dir ./index
+#   python rank.py --candidates ./candidates.jsonl --index_dir ./index --out ./submission.csv
+
+# ============================================================================
+# Compute environment
+# ============================================================================
+compute:
+  platform: "Windows 10 (Local workstation)"
+  cpu_cores: 16
+  ram_gb: 16
+  python_version: "3.10.11"
+  os: "Windows-10-10.0.26200"
+  uses_gpu_for_inference: false
+  has_network_during_ranking: false
+  pre_computation_required: true
+  pre_computation_time_minutes: 20
+  ranking_time_minutes: 0.59
+
+# ============================================================================
+# AI tools declaration
+# ============================================================================
+ai_tools_used:
+  - "IBM Bob (Claude-based coding assistant)"
+
+ai_usage_summary: |
+  IBM Bob (a Claude-based AI coding assistant) was used throughout the project
+  for architecture design, code review, and implementation. The assistant helped
+  structure the ten-module pipeline, review scoring weights, and debug edge cases.
+  No candidate data was fed to any external LLM or API at any point.
+  All scoring logic, keyword sets, and ranking decisions were reviewed and
+  validated by the human developer.
+
+# ============================================================================
+# Approach summary
+# ============================================================================
+methodology_summary: |
+  Pure rule-based + semantic hybrid ranker. Ten-stage pipeline:
+
+  1. JD Parser — structured hiring intent from JD prose (must-have skills,
+     preferred skills, experience bands, salary, locations, disqualifiers).
+
+  2. Semantic Encoder — all-MiniLM-L6-v2 embeddings for all 100K candidate
+     narratives, stored offline. Three JD probe documents queried at rank time
+     via matrix multiply (< 1s for 100K).
+
+  3. Feature Extractor — 65+ numeric features: retrieval/NLP/eval career
+     evidence, python quality signal, preferred skill corroboration, production
+     deployment evidence, pre-LLM ML flag, consulting/research fractions, etc.
+     Career descriptions are the primary signal; skills require corroboration.
+
+  4. Anti-Trap Detector — six integrity checks: timeline impossibility, skill
+     impossibility, keyword stuffing, behavioral contradictions, title inflation,
+     corroboration absence. Batch behavioral twin detection.
+
+  5. Composite Scorer — 10-stage weighted formula: technical fit (42%),
+     career quality (25%), location (8%), education (6%), bonuses (5%),
+     penalties, trust multiplier, behavioral multiplier.
+
+  6. Reason Generator — grounded 1-2 sentence reasoning per candidate;
+     every claim traces to a real profile field.
+
+  Runtime: < 1 minute for 100K candidates on CPU.
+
+# ============================================================================
+# Submission files
+# ============================================================================
+submission_files:
+  - submission.csv    # Primary submission (100 rows, validated)
+  - submission.xlsx   # Excel copy (identical content, zero differences)
+  - README.md         # Full architecture and reproducibility documentation
+  - requirements.txt  # numpy>=1.24.0, sentence-transformers>=2.2.0
+
+# ============================================================================
+# Declarations
+# ============================================================================
+declarations:
+  read_submission_spec: true
+  code_is_original_work: true
+  no_collusion: true
+  honeypot_check_done: true
+  reproduction_tested: true
