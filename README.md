@@ -210,9 +210,6 @@ flowchart TD
 ```
 redrob-ai-recruiter/
 │
-├── 📁 data/
-│   └── candidates.csv              # Raw input dataset (100,000 profiles)
-│
 ├── 📁 src/
 │   ├── feature_engineering.py      # Builds the 65+ feature set per candidate
 │   ├── semantic_retrieval.py        # Role-fit matching via semantic similarity
