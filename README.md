@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎯 Redrob AI Candidate Ranking System
+# 🎯 RecruitIQ Labs​ :- A Candidate Ranking System
 
 ### Explainable, CPU-Only Candidate Intelligence at Scale
 
